@@ -2,7 +2,7 @@
   "model": "flat",
   "experiment_dir": "./output_dir/experiment-cpc-ecir/flat_cls",
   "data_dir": "./data/uspto-debug",
-  "embedding_dir": "/fs/scratch/rng_cr_bcai_dl_students/r26/huggingface-transformers/scibert_scivocab_uncased",
+  "embedding_dir": "anferico/bert-for-patents",
   "input_type": "CLS",
   "dense_layer_size": 256,
   "kernels": [3, 4, 5],

@@ -33,10 +33,10 @@ def main():
     np.random.seed(42)
 
     parser = argparse.ArgumentParser(description='Run the classification pipeline.')
-    parser.add_argument('--config_file', type=str, help='path to configuration file.')
-    parser.add_argument('--op', type=str, help='operation to execute, train|test')
-
+    parser.add_argument('--config_file', type=str, help='path to configuration file.', default="./config/flat_cls.json")
+    parser.add_argument('--op', type=str, help='operation to execute, train|test', default="train")
     args = parser.parse_args()
+
     config = json.loads(open(args.config_file).read())
 
     os.makedirs(config["experiment_dir"], exist_ok=True)
@@ -46,13 +46,13 @@ def main():
         data_loader.load().initialize_bert_input()
         binarizer = BinarizerDataset(data_loader, BinarizerFlat)
         data_loader.binarize(binarizer)
-        evaluator = Evaluator(binarizer.mlb_train.mlb)
+        evaluator = Evaluator(binarizer.mlb_fit.mlb)
         model = Flat(config, data_loader, binarizer, evaluator)
     elif config["model"] == "TMM" or config["model"] == "THMM":
         data_loader.load(expand_label=True).initialize_bert_input()
         binarizer = BinarizerDataset(data_loader, BinarizerTHMM_TMM)
         data_loader.binarize(binarizer)
-        evaluator = Evaluator(binarizer.mlb_train.mlb)
+        evaluator = Evaluator(binarizer.mlb_fit.mlb)
         if config["model"] == "TMM":
             model = TMM(config, data_loader, binarizer, evaluator)
         elif config["model"] == "THMM":

@@ -31,5 +31,5 @@ class Flat(ModelBase):
         """
         dense1 = tf.keras.layers.Dense(self.dense_layer_size, activation='relu')(doc_representation)
         drop_dense_1 = tf.keras.layers.Dropout(self.dropout_rate)(dense1)
-        outputs = tf.keras.layers.Dense(len(self.binarizer.mlb_train.mlb.classes_), activation='sigmoid')(drop_dense_1)
+        outputs = tf.keras.layers.Dense(len(self.binarizer.mlb_fit.mlb.classes_), activation='sigmoid')(drop_dense_1)
         return outputs

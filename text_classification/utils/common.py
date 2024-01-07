@@ -14,7 +14,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
-
 import pandas as pd
 import tensorflow as tf
 from transformers import BertTokenizer
@@ -33,7 +32,7 @@ class BERTHandler:
         """
         Create input for BERT with provided text value in X.
         :param X: Different values of text.
-        :param max_len: maimum length of text sequence.
+        :param max_len: maximum length of text sequence.
         :return:
         """
         input_ids_all = []
@@ -123,6 +122,7 @@ class DataLoader:
         test = pd.read_csv(os.path.join(self.data_dir, "test.tsv"), sep="\t")
         dev = pd.read_csv(os.path.join(self.data_dir, "dev.tsv"), sep="\t")
 
+        # todo: use claims, text?
         self.X_train = [row["title"].lower() + " " + row["abstract"].lower() for _, row in train.iterrows()]
         self.X_dev = [row["title"].lower() + " " + row["abstract"].lower() for _, row in dev.iterrows()]
         self.X_test = [row["title"].lower() + " " + row["abstract"].lower() for _, row in test.iterrows()]
@@ -131,6 +131,7 @@ class DataLoader:
         self.y_dev_raw = [eval(item) for item in dev.labels.tolist()]
 
         if expand_label:
+            #Todo: for multilabels, how to split?
             self.y_train_raw = [list(set(sum([[j[0], j[:3], j] for j in tk], []))) for tk in self.y_train_raw]
             self.y_dev_raw = [list(set(sum([[j[0], j[:3], j] for j in tk], []))) for tk in self.y_dev_raw]
             self.y_test_raw = [list(set(sum([[j[0], j[:3], j] for j in tk], []))) for tk in self.y_test_raw]
@@ -166,17 +167,17 @@ class DataLoader:
         :return: self
         """
         if self.y_train_raw:
-            self.y_train_bin = binarizer.mlb_train.transform(self.y_train_raw)
+            self.y_train_bin = binarizer.mlb_fit.transform(self.y_train_raw)
         else:
             raise ValueError("y_train labels not intailized")
 
         if self.y_dev_raw:
-            self.y_dev_bin = binarizer.mlb_train.transform(self.y_dev_raw)
+            self.y_dev_bin = binarizer.mlb_fit.transform(self.y_dev_raw)
         else:
             raise ValueError("y_dev labels not intailized")
 
         if self.y_test_raw:
-            self.y_test_bin = binarizer.mlb_train.transform(self.y_test_raw)
+            self.y_test_bin = binarizer.mlb_fit.transform(self.y_test_raw)
         else:
             raise ValueError("y_test labels not intailized")
 

@@ -53,8 +53,8 @@ class Callback(tf.keras.callbacks.Callback):
         # calculating performance on the train dataset
         y_pred_train = self.model.predict(self.data_loader.X_train_bert_input)
         
-        y_actual_train = self.binarizer.mlb_train.get_sklearn_mlb_from_pred(self.data_loader.y_train_bin)
-        y_pred_train = self.binarizer.mlb_train.get_sklearn_mlb_from_pred(y_pred_train)
+        y_actual_train = self.binarizer.mlb_fit.get_sklearn_mlb_from_pred(self.data_loader.y_train_bin)
+        y_pred_train = self.binarizer.mlb_fit.get_sklearn_mlb_from_pred(y_pred_train)
 
         train_metrics_dict, train_preds = self.evaluator.get_metrics(
             y_actual_train,
@@ -69,8 +69,8 @@ class Callback(tf.keras.callbacks.Callback):
         # calculating performance on the dev dataset
         y_pred_dev = self.model.predict(self.data_loader.X_dev_bert_input)
 
-        y_actual_dev = self.binarizer.mlb_train.get_sklearn_mlb_from_pred(self.data_loader.y_dev_bin)
-        y_pred_dev = self.binarizer.mlb_train.get_sklearn_mlb_from_pred(y_pred_dev)
+        y_actual_dev = self.binarizer.mlb_fit.get_sklearn_mlb_from_pred(self.data_loader.y_dev_bin)
+        y_pred_dev = self.binarizer.mlb_fit.get_sklearn_mlb_from_pred(y_pred_dev)
 
         os.makedirs(os.path.join(self.experiment_dir, "dev"), exist_ok=True)
         pickle.dump(y_pred_dev, open(os.path.join(self.experiment_dir, "dev", "%s.pkl" % epoch), "wb"))

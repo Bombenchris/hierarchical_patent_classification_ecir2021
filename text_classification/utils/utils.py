@@ -130,7 +130,8 @@ class Evaluator:
                 pred: np.ndarray):
 
         pred_labels = self.mlb.inverse_transform(pred)
-        
+
+        # why expend labels here???
         pred_labels = self.expand_labels(pred_labels)
         
         pred_labels = self.mlb.transform(pred_labels)

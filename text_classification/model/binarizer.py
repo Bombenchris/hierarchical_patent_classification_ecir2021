@@ -26,7 +26,7 @@ class BinarizerBase:
     """
 
     def __init__(self):
-        self.mlb = None
+        self.mlb = MultiLabelBinarizer()
 
     def fit(self, labels):
         """
@@ -71,7 +71,6 @@ class BinarizerFlat(BinarizerBase):
         super(BinarizerFlat, self).__init__()
 
     def fit(self, y):
-        self.mlb = MultiLabelBinarizer()
         self.mlb.fit(y)
 
     def transform(self, y):
@@ -97,7 +96,6 @@ class BinarizerTHMM_TMM(BinarizerBase):
         super(BinarizerTHMM_TMM, self).__init__()
 
     def fit(self, y):
-        self.mlb = MultiLabelBinarizer()
         self.mlb.fit(y)
 
     def transform(self, y):
@@ -145,18 +143,14 @@ class BinarizerTHMM_TMM(BinarizerBase):
 
 class BinarizerDataset:
     """
-    A binarizer for each train, dev and test.
+    A binarizer fitted for train, dev and test.
     """
 
     def __init__(self, data_loader, class_object):
-        self.mlb_train = class_object()
-        self.mlb_train.fit(data_loader.y_train_raw)
+        # todo: it doenst't work by fitting each y a separate binarizer, wherein the outputs have different dim.
+        self.mlb_fit = class_object()
+        self.mlb_fit.fit(data_loader.y_train_raw + data_loader.y_dev_raw + data_loader.y_test_raw)
 
-        self.mlb_dev = class_object()
-        self.mlb_dev.fit(data_loader.y_dev_raw)
-
-        self.mlb_test = class_object()
-        self.mlb_test.fit(data_loader.y_test_raw)
 
     def save(self, filename):
         pickle.dump(self, open(filename, "wb"))

@@ -98,11 +98,12 @@ class ModelBase:
 
         bert_layer.trainable = self.bert_trainable
 
-        last_hidden_state, pooler_output, hidden_states = bert_layer([token_inputs, mask_inputs, seg_inputs])
+        #last_hidden_state, pooler_output, hidden_states = bert_layer([token_inputs, mask_inputs, seg_inputs])
+        output = bert_layer([token_inputs, mask_inputs, seg_inputs])
         if self.input_type == "CNN":
-            input_representation = self.__get_CNN_layer(hidden_states)
+            input_representation = self.__get_CNN_layer(output.hidden_states)
         elif self.input_type == "CLS":
-            input_representation = pooler_output
+            input_representation = output.pooler_output
         return input_representation, [token_inputs, mask_inputs, seg_inputs]
 
     def __get_CNN_layer(self, hidden_states):
@@ -141,7 +142,8 @@ class ModelBase:
         self.model = tf.keras.models.Model(bert_input, outputs)
         adam_optimizer = tfa.optimizers.AdamW(weight_decay=0, learning_rate=self.learning_rate)
         self.model.compile(optimizer=adam_optimizer, loss='binary_crossentropy')
-        # tf.keras.utils.plot_model(self.model, to_file=os.path.join(self.experiment_dir, "model.png"), show_shapes=True)
+        # tf.keras.utils.plot_model(self.model, to_file=os.path.join(self.experiment_dir, "model.png"), show_shapes=True,
+        #                          show_layer_names=True)
         return self
 
     def train(self):
